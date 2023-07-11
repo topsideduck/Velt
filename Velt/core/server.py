@@ -13,3 +13,21 @@ class Server:
         self.server_socket.bind((self.host, self.port))
 
         self.clients = {}
+
+    def accept_incoming_collections(self) -> None:
+        self.server_socket.listen(0)
+
+        while True:
+            client_socket, client_address = self.server_socket.accept()
+            client_name = ":".join([str(i) for i in client_address])
+            print(f"Accepted connection from {client_name}!")
+
+            client_data = {
+                "ip": client_address[0],
+                "port": client_address[1],
+                "socket": client_socket,
+                "tcp": TCP(client_socket),
+            }
+
+            self.clients[client_name] = client_data
+
