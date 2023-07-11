@@ -1,4 +1,5 @@
 import socket
+import pickle
 
 from threading import Thread
 
@@ -41,4 +42,15 @@ class Server:
             }
 
             self.clients[client_name] = client_data
+            self.client = client_name
 
+    def run(self):
+        while True:
+            command = input("> ")
+            self.clients[self.client]["tcp"].send(pickle.dumps(command))
+            print(pickle.loads(self.clients[self.client]["tcp"].receive()))
+
+
+if __name__ == '__main__':
+    server = Server('localhost', 4444)
+    server.run()
