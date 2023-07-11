@@ -23,3 +23,22 @@ class Client:
 
             except socket.error:
                 time.sleep(3)
+
+    def execute(self, command: str):
+        return f"You said: {command}"
+
+    def run(self):
+        while True:
+            try:
+                data = pickle.loads(self.tcp.receive())
+                output = self.execute(data)
+                self.tcp.send(pickle.dumps(output))
+
+            except (socket.error, TypeError, BrokenPipeError):
+                print("Disconnected!")
+                self.tcp = TCP(self.connect())
+
+
+if __name__ == '__main__':
+    client = Client('localhost', 4444)
+    client.run()
