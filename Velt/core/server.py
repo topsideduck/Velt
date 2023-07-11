@@ -1,5 +1,7 @@
 import socket
 
+from threading import Thread
+
 from Velt.core.tcp import TCP
 
 
@@ -13,6 +15,15 @@ class Server:
         self.server_socket.bind((self.host, self.port))
 
         self.clients = {}
+
+        self.connection_thread = Thread(
+            target=self.accept_incoming_collections,
+            name="Accept incoming connections",
+            daemon=True,
+        )
+        self.connection_thread.start()
+
+        self.client: str | None = None
 
     def accept_incoming_collections(self) -> None:
         self.server_socket.listen(0)
