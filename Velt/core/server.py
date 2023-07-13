@@ -1,6 +1,5 @@
-import socket
 import pickle
-
+import socket
 from threading import Thread
 
 from Velt.core.tcp import TCP
@@ -44,13 +43,6 @@ class Server:
             self.clients[client_name] = client_data
             self.client = client_name
 
-    def run(self):
-        while True:
-            command = input("> ")
-            self.clients[self.client]["tcp"].send(pickle.dumps(command))
-            print(pickle.loads(self.clients[self.client]["tcp"].receive()))
-
-
-if __name__ == '__main__':
-    server = Server('localhost', 4444)
-    server.run()
+    def run(self, command: dict):
+        self.clients[self.client]["tcp"].send(pickle.dumps(command))
+        return pickle.loads(self.clients[self.client]["tcp"].receive())
