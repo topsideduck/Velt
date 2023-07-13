@@ -3,6 +3,7 @@ import socket
 import time
 
 from Velt.core.tcp import TCP
+from Velt.processor.echo import EchoProcessor
 
 
 class Client:
@@ -11,6 +12,8 @@ class Client:
         self.port = port
 
         self.tcp = TCP(self.connect())
+
+        self.processor_mapping = {"echo": EchoProcessor}
 
     def connect(self) -> socket.socket:
         while True:
@@ -24,8 +27,8 @@ class Client:
             except socket.error:
                 time.sleep(3)
 
-    def execute(self, command: str):
-        return f"You said: {command}"
+    def execute(self, command: dict):
+        return self.processor_mapping[command["command"]](command).run()
 
     def run(self):
         while True:
